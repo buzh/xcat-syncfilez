@@ -1,0 +1,27 @@
+# Simple syncfiles replacement for xCat2
+#
+# Andreas Skau, Scientific Computing Services, University of Oslo
+# <buzh@uio.no> - https://github.com/buzh - All Rites ReversedⓀ
+
+N=`basename $0`
+NODE=$(hostname -s)
+
+set -x
+exec 1>>/var/log/xcat/$N.log
+exec 2>>/var/log/xcat/$N.log
+
+export $(grep ^MASTER_IP= /xcatpost/mypostscript) ## Get master IP
+
+send_req() {
+	cat <<EOF | openssl s_client -no_ssl3 -connect $MASTER_IP:3001 -brief
+	<xcatrequest>
+	   <command>syncfiles</command>
+	   </xcatrequest>
+	   EOF
+}
+
+echo "$NODE : Initiating syncfiles from head node"
+logger -t xcat "$NODE : $N : Running syncfilez"
+
+send_req || exit 1
+
