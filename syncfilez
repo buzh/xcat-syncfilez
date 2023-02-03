@@ -17,7 +17,7 @@ send_req() {
 	<xcatrequest>
 	   <command>syncfiles</command>
 	   </xcatrequest>
-	   EOF
+	EOF
 }
 
 echo "$NODE : Initiating syncfiles from head node"
